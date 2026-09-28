@@ -15,5 +15,6 @@ USER root
 
 COPY --chmod=755 fly-entrypoint.sh /usr/local/bin/fly-entrypoint.sh
 
-ENTRYPOINT ["tini", "--", "/usr/local/bin/fly-entrypoint.sh"]
+# -s: Fly's init is PID 1, so tini must register as a subreaper to reap zombies.
+ENTRYPOINT ["tini", "-s", "--", "/usr/local/bin/fly-entrypoint.sh"]
 CMD ["/home/suwayomi/startup_script.sh"]

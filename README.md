@@ -4,9 +4,9 @@ Fly.io deployment config for [Suwayomi-Server](https://github.com/Suwayomi/Suway
 
 With this you can read your Mihon library in any browser, and keep reading progress in sync with Mihon on your phone.
 
-- One Fly Machine (1 GB RAM) plus one volume. The database is Suwayomi's built-in H2.
+- One Fly Machine (2 GB RAM, which includes the embedded Chromium many sources need) plus one volume. The database is Suwayomi's built-in H2.
 - Basic auth is on, and credentials live in `fly secrets`.
-- The machine suspends when idle and resumes on the next request in under a second. Cost is about $1–3/mo.
+- The machine suspends when idle and resumes on the next request in under a second. Cost is about $2–5/mo.
 
 ## Prerequisites
 
@@ -70,7 +70,7 @@ Trackers are write-only from Mihon's point of view: nothing reads progress back 
 
 ## Cost and availability
 
-`fly.toml` ships with `auto_stop_machines = 'suspend'`. The comment block at `[http_service]` has the two lines to change for always-on (about $6/mo).
+`fly.toml` ships with `auto_stop_machines = 'suspend'`. The comment block at `[http_service]` has the two lines to change for always-on (about $11/mo).
 
 While suspended, scheduled library updates and automatic backups don't run. Use `suspend`, not `stop`: a cold JVM start takes about 15s, which is long enough for Mihon's requests to time out.
 
@@ -78,7 +78,7 @@ While suspended, scheduled library updates and automatic backups don't run. Use 
 
 - **"Unauthorized" with the right credentials on a phone.** Basic auth is case-sensitive and whitespace-sensitive. Phone keyboards often capitalize the first letter of the username, and copying a whole line can add a trailing space or newline.
 - **A source works on your phone but not here.** Some sites block datacenter IPs or sit behind Cloudflare challenges. Suwayomi can route through [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) (`FLARESOLVERR_*`) or a SOCKS proxy (`SOCKS_PROXY_*`); see the [container docs](https://github.com/Suwayomi/Suwayomi-Server-docker) for the variables.
-- **A source needs a WebView.** Set `KCEF_ENABLED = 'true'` and raise `memory_mb` to 2048.
+- **`CEF is disabled` errors, or a source's chapters 404.** That source needs the embedded WebView: keep `KCEF_ENABLED = 'true'` with `memory_mb = 2048`. You can only turn KCEF off to save memory if none of your sources need it.
 - **Out-of-memory restarts.** Raise `memory_mb` and `-Xmx` in `JAVA_TOOL_OPTIONS` together, keeping the heap at about 60% of RAM.
 
 ## Why there's a Dockerfile

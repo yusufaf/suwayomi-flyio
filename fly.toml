@@ -27,10 +27,12 @@ primary_region = 'lax'
   WEB_UI_FLAVOR = 'WebUI'
   WEB_UI_CHANNEL = 'stable'
 
-  # KCEF is an embedded Chromium used by the few sources that need a real
-  # WebView. It roughly doubles memory use, so it's off by default. Turn it on
-  # (and bump memory_mb to 2048) only if a source you use needs it.
-  KCEF_ENABLED = 'false'
+  # KCEF is an embedded Chromium (bundled in the image) that sources use for
+  # Cloudflare challenges and JS-rendered pages. Many popular sources need it:
+  # without it they fail with "CEF is disabled", and stale chapter URLs 404.
+  # It is why memory_mb is 2048. If none of your sources need it, set 'false'
+  # and drop to 1024.
+  KCEF_ENABLED = 'true'
 
   # Extension repos, as a JSON array. Applied on every boot, so this list
   # overrides repos added in the web UI. Leave it unset to manage repos in the
@@ -43,7 +45,7 @@ primary_region = 'lax'
 
   # Cap the JVM heap so it fits inside memory_mb with room for metaspace,
   # threads and the OS. The JVM reads this variable on its own.
-  JAVA_TOOL_OPTIONS = '-Xmx640m'
+  JAVA_TOOL_OPTIONS = '-Xmx768m'
 
 [[mounts]]
   source = 'suwayomi_data'
@@ -59,7 +61,7 @@ primary_region = 'lax'
 
   # --- Cost / availability tradeoff: change these two lines together ---
   #
-  # AUTO-SUSPEND (~$1-3/mo) — the values set below. The machine suspends when
+  # AUTO-SUSPEND (~$2-5/mo) — the values set below. The machine suspends when
   #   idle and resumes on the next request in well under a second, with the
   #   JVM still warm. Scheduled library updates and backups don't run while
   #   suspended.
@@ -67,7 +69,7 @@ primary_region = 'lax'
   #     auto_stop_machines   = 'suspend'
   #     min_machines_running = 0
   #
-  # ALWAYS-ON (~$6/mo) — scheduled updates/backups run on time:
+  # ALWAYS-ON (~$11/mo) — scheduled updates/backups run on time:
   #
   #     auto_stop_machines   = 'off'
   #     min_machines_running = 1
@@ -100,4 +102,4 @@ primary_region = 'lax'
 [[vm]]
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 1024
+  memory_mb = 2048
