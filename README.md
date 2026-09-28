@@ -17,6 +17,8 @@ With this you can read your Mihon library in any browser, and keep reading progr
 
 `app = 'suwayomi-af'` in `fly.toml` is an example. Fly app names are globally unique, so change it to something of your own before deploying. Nothing else references the name.
 
+While you're there, set `primary_region` to a [Fly region](https://fly.io/docs/reference/regions/) near you and `TZ` to your timezone.
+
 ## Deploy
 
 ```bash
