@@ -80,10 +80,12 @@ primary_region = 'lax'
   auto_start_machines = true
   processes = ['app']
 
+  # The web UI loads a whole library page of cover thumbnails at once, so a
+  # single user easily exceeds 50 in-flight requests.
   [http_service.concurrency]
     type = 'requests'
-    hard_limit = 50
-    soft_limit = 25
+    hard_limit = 200
+    soft_limit = 100
 
 # TCP, not HTTP: with basic_auth on, every HTTP path answers 401, which an
 # HTTP check would treat as unhealthy.
