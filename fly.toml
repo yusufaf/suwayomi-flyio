@@ -1,0 +1,101 @@
+# Suwayomi-Server on Fly.io — single app, H2 database, one volume.
+#
+# `app` below is an EXAMPLE name. Fly app names are globally unique across all
+# Fly users, so pick your own. See README → "Choose your own app name".
+#
+# The image is built from the Dockerfile in this repo rather than pulled
+# directly, only so the root-owned Fly volume can be chowned. See Dockerfile.
+#
+# See https://fly.io/docs/reference/configuration/
+
+app = 'suwayomi-af'
+primary_region = 'lax'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  TZ = 'America/Los_Angeles'
+
+  # The server is on the public internet, so auth is not optional.
+  # basic_auth is the mode the Mihon "Suwayomi" extension and tracker support.
+  # AUTH_USERNAME and AUTH_PASSWORD are NOT set here — they go in
+  # `fly secrets` so they never land in git. See README.
+  AUTH_MODE = 'basic_auth'
+
+  WEB_UI_ENABLED = 'true'
+  WEB_UI_FLAVOR = 'WebUI'
+  WEB_UI_CHANNEL = 'stable'
+
+  # KCEF is an embedded Chromium used by the few sources that need a real
+  # WebView. It roughly doubles memory use, so it's off by default. Turn it on
+  # (and bump memory_mb to 2048) only if a source you use needs it.
+  KCEF_ENABLED = 'false'
+
+  # Extension repos, as a JSON array. Applied on every boot, so this list
+  # overrides repos added in the web UI. Leave it unset to manage repos in the
+  # UI instead.
+  EXTENSION_STORES = '["https://github.com/keiyoushi/extensions/raw/repo/index.pb"]'
+
+  # Chapters are read straight from sources. Auto-downloading would fill the
+  # volume and cost more for no benefit on a streaming setup.
+  AUTO_DOWNLOAD_CHAPTERS = 'false'
+
+  # Cap the JVM heap so it fits inside memory_mb with room for metaspace,
+  # threads and the OS. The JVM reads this variable on its own.
+  JAVA_TOOL_OPTIONS = '-Xmx640m'
+
+[[mounts]]
+  source = 'suwayomi_data'
+  destination = '/home/suwayomi/.local/share/Tachidesk'
+  initial_size = '1GB'
+  auto_extend_size_threshold = 90
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '5GB'
+
+[http_service]
+  internal_port = 4567
+  force_https = true
+
+  # --- Cost / availability tradeoff: change these two lines together ---
+  #
+  # AUTO-SUSPEND (~$1-3/mo) — the values set below. The machine suspends when
+  #   idle and resumes on the next request in well under a second, with the
+  #   JVM still warm. Scheduled library updates and backups don't run while
+  #   suspended.
+  #
+  #     auto_stop_machines   = 'suspend'
+  #     min_machines_running = 0
+  #
+  # ALWAYS-ON (~$6/mo) — scheduled updates/backups run on time:
+  #
+  #     auto_stop_machines   = 'off'
+  #     min_machines_running = 1
+  #
+  # Don't use 'stop' instead of 'suspend': a cold JVM boot takes ~15s, long
+  # enough for the Mihon extension's requests to time out.
+  auto_stop_machines = 'suspend'
+  min_machines_running = 0
+
+  auto_start_machines = true
+  processes = ['app']
+
+  [http_service.concurrency]
+    type = 'requests'
+    hard_limit = 50
+    soft_limit = 25
+
+# TCP, not HTTP: with basic_auth on, every HTTP path answers 401, which an
+# HTTP check would treat as unhealthy.
+[checks]
+  [checks.alive]
+    type = 'tcp'
+    port = 4567
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '60s'
+
+[[vm]]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024

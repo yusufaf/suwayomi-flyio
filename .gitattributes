@@ -1,0 +1,5 @@
+# fly-entrypoint.sh is authored on Windows and runs as the container's
+# ENTRYPOINT. A CRLF shebang line makes the container fail to boot with
+# `/bin/sh^M: bad interpreter`, so LF here is not cosmetic.
+* text=auto eol=lf
+*.sh text eol=lf

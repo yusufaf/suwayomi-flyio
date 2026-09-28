@@ -1,0 +1,12 @@
+node_modules/
+
+# Mihon / Suwayomi backups contain your library and tracker bindings
+*.tachibk
+*.proto.gz
+
+# Claude Code settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

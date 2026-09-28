@@ -1,0 +1,17 @@
+{
+  "name": "suwayomi-flyio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fly.io deployment config for Suwayomi-Server",
+  "scripts": {
+    "test": "echo \"no tests\"",
+    "prepare": "husky"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@10.24.0",
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
+    "husky": "^9.1.7"
+  }
+}
