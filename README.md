@@ -48,12 +48,17 @@ Open `https://<your-app-name>.fly.dev`. The browser asks for the credentials, th
 
 This keeps read status in sync both ways between Mihon and the web UI.
 
-1. **Make a fresh Mihon backup and keep it somewhere safe.** The migration in step 3 rewrites library entries.
-2. In Mihon, install the **Suwayomi** extension from the Keiyoushi repo. Open its settings and enter:
-   - the server URL: `https://<your-app-name>.fly.dev`
-   - your basic-auth username and password
-3. Go to **Browse → Migrate** and move your library entries onto the Suwayomi source. Migration keeps read status and trackers.
-4. Go to **Settings → Tracking** and enable **Suwayomi**. It binds automatically to entries from the Suwayomi source.
+1. **Make a fresh Mihon backup and keep it somewhere safe.** The migration in step 4 rewrites library entries.
+2. The extension isn't in the Keiyoushi repo; it has its own. In Mihon, go to **Settings → Browse → Extension repos** and add:
+   ```
+   https://raw.githubusercontent.com/suwayomi/tachiyomi-extension/repo/index.min.json
+   ```
+3. Go to **Browse → Extensions** and install **Suwayomi** (it's listed under "All"). Open its settings and set:
+   - **Server URL:** `https://<your-app-name>.fly.dev`, with no trailing slash
+   - **Auth mode:** Basic Authentication. It must match `AUTH_MODE`.
+   - **Login / Password:** your `AUTH_USERNAME` / `AUTH_PASSWORD`
+4. Go to **Browse → Migrate** and move your library entries onto the Suwayomi source. Migration keeps read status and trackers.
+5. Go to **Settings → Tracking** and enable **Suwayomi**. It binds automatically to entries from the Suwayomi source.
 
 Progress you make in Mihon is pushed to the server as you read. To pull progress you made in the web UI, open the manga's tracking sheet in Mihon.
 
