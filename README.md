@@ -77,6 +77,7 @@ While suspended, scheduled library updates and automatic backups don't run. Use 
 ## Troubleshooting
 
 - **"Unauthorized" with the right credentials on a phone.** Basic auth is case-sensitive and whitespace-sensitive. Phone keyboards often capitalize the first letter of the username, and copying a whole line can add a trailing space or newline.
+- **Images fail with `Cloudflare bypass currently disabled`.** The source's image host challenges datacenter IPs. The simplest fix is to migrate those titles to another source that carries them (in the web UI: the manga's menu → Migrate). FlareSolverr (below) is the heavier alternative.
 - **A source works on your phone but not here.** Some sites block datacenter IPs or sit behind Cloudflare challenges. Suwayomi can route through [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) (`FLARESOLVERR_*`) or a SOCKS proxy (`SOCKS_PROXY_*`); see the [container docs](https://github.com/Suwayomi/Suwayomi-Server-docker) for the variables.
 - **`CEF is disabled` errors, or a source's chapters 404.** That source needs the embedded WebView: keep `KCEF_ENABLED = 'true'` with `memory_mb = 2048`. You can only turn KCEF off to save memory if none of your sources need it.
 - **Out-of-memory restarts.** Raise `memory_mb` and `-Xmx` in `JAVA_TOOL_OPTIONS` together, keeping the heap at about 60% of RAM.
