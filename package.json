@@ -1,6 +1,6 @@
 {
   "name": "suwayomi-flyio",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Fly.io deployment config for Suwayomi-Server",
   "scripts": {
