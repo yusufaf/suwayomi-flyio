@@ -58,7 +58,7 @@ This keeps read status in sync both ways between Mihon and the web UI.
    - **Auth mode:** Basic Authentication. It must match `AUTH_MODE`.
    - **Login / Password:** your `AUTH_USERNAME` / `AUTH_PASSWORD`
 4. Go to **Browse → Migrate** and move your library entries onto the Suwayomi source. Migration keeps read status and trackers.
-5. Go to **Settings → Tracking** and enable **Suwayomi**. It binds automatically to entries from the Suwayomi source.
+5. Go to **Settings → Tracking** and enable **Suwayomi**. It only binds automatically to titles you add *after* enabling it. For each migrated title, open its tracking sheet and tap **Suwayomi** once. Until you do, progress you make in Mihon isn't sent to the server.
 
 Progress you make in Mihon is pushed to the server as you read. To pull progress you made in the web UI, open the manga's tracking sheet in Mihon.
 
@@ -76,6 +76,7 @@ While suspended, scheduled library updates and automatic backups don't run. Use 
 
 ## Troubleshooting
 
+- **Changed a title's source on the server after migrating Mihon.** Mihon's Suwayomi entries point at a server entry ID, and a source change creates a new one. In Mihon, migrate those titles again (Suwayomi → Suwayomi).
 - **"Unauthorized" with the right credentials on a phone.** Basic auth is case-sensitive and whitespace-sensitive. Phone keyboards often capitalize the first letter of the username, and copying a whole line can add a trailing space or newline.
 - **Images fail with `Cloudflare bypass currently disabled`.** The source's image host challenges datacenter IPs. The simplest fix is to migrate those titles to another source that carries them (in the web UI: the manga's menu → Migrate). FlareSolverr (below) is the heavier alternative.
 - **A source works on your phone but not here.** Some sites block datacenter IPs or sit behind Cloudflare challenges. Suwayomi can route through [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) (`FLARESOLVERR_*`) or a SOCKS proxy (`SOCKS_PROXY_*`); see the [container docs](https://github.com/Suwayomi/Suwayomi-Server-docker) for the variables.
